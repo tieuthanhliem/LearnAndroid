@@ -9,7 +9,10 @@ fun main(){
 //    printAlphabetSongWith()
 //    printAlphabetSongApply()
 //    makeNullException()
-    testLet()
+//    testLet()
+//    testNothing()
+    testReadNumbers()
+
 
  }
 
