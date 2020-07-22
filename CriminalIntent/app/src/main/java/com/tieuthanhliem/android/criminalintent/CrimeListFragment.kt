@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,6 +17,7 @@ private const val TAG = "CrimeListFragment"
 
 class CrimeListFragment : Fragment() {
     private lateinit var crimeRecyclerView: RecyclerView
+    private var adapter: CrimeAdapter? = null
 
     private val crimeListViewModel: CrimeListViewModel by lazy {
         ViewModelProviders.of(this).get(CrimeListViewModel::class.java)
@@ -36,12 +38,50 @@ class CrimeListFragment : Fragment() {
         crimeRecyclerView = view.findViewById(R.id.crime_recycler_view)
         crimeRecyclerView.layoutManager = LinearLayoutManager(context)
 
+        updateUI()
+
         return view
     }
 
-    private inner class CrimeHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var titleTextView: TextView = itemView.findViewById(R.id.crime_title)
-        var dateTextView: TextView = itemView.findViewById(R.id.crime_date)
+    private fun updateUI() {
+        adapter = CrimeAdapter(crimeListViewModel.crimes)
+        crimeRecyclerView.adapter = adapter
+    }
+
+    private inner class CrimeHolder(view: View)
+        : RecyclerView.ViewHolder(view), View.OnClickListener {
+
+        private lateinit var crime: Crime
+        private var titleTextView: TextView = itemView.findViewById(R.id.crime_title)
+        private var dateTextView: TextView = itemView.findViewById(R.id.crime_date)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        fun bind(crime: Crime) {
+            this.crime = crime
+            titleTextView.text = this.crime.title
+            dateTextView.text  = this.crime.date.toString()
+        }
+
+        override fun onClick(v: View?) {
+            Toast.makeText(context, "${crime.title} pressed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private inner class CrimeAdapter(val crimes: List<Crime>) : RecyclerView.Adapter<CrimeHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
+            val view = layoutInflater.inflate(R.layout.list_item_crime, parent, false)
+            return CrimeHolder(view)
+        }
+
+        override fun getItemCount(): Int = crimes.size
+
+        override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
+            holder.bind(crimes[position])
+        }
+
     }
 
     companion object {
