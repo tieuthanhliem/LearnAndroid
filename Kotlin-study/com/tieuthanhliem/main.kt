@@ -11,7 +11,10 @@ fun main(){
 //    makeNullException()
 //    testLet()
 //    testNothing()
-    testReadNumbers()
+//    testReadNumbers()
+//    testArray()
+//    testIntArray()
+    testPlus()
 
 
  }
